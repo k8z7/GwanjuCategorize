@@ -9,7 +9,7 @@
 
 Gwanju Categorize http://blog.daum.net/andro_java/747
 
-[통계] 관주유형 분류 보고서(2) http://blog.daum.net/andro_java/746
+[통계] 관주유형 분류 보고서(3) http://blog.daum.net/andro_java/749
 
 위 글에 작업과정 요약, 아래 글에 결과 다듬어진 정규식이 있습니다.
 
