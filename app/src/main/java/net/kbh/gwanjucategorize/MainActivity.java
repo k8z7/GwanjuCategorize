@@ -46,57 +46,95 @@ public class MainActivity extends AppCompatActivity {
         String text = readFile(rptFile);
         ArrayList<String> gwanjuAll = new ArrayList<String>(Arrays.asList(text.split("\n")));
         int TotalCount = gwanjuAll.size();
-        int type_1 = 0;
-        int type_2 = 0;
-        int type_3 = 0;
-        int type_4 = 0;
-        int type_5 = 0;
-        int type_6 = 0;
-        int type_7 = 0;
-        int type_8 = 0;
+        int type_01 = 0;
+        int type_02 = 0;
+        int type_03 = 0;
+        int type_04 = 0;
+        int type_05 = 0;
+        int type_06 = 0;
+        int type_07 = 0;
+        int type_08 = 0;
+        int type_09 = 0;
+        int type_10 = 0;
         int type_out = 0;
         String outsider = "";
 
-        // 1) '장:~장:' - jangjul에 ':~' 포함된 종류
-        // jangjul : 관주 숫자로 시작되는 어절
-        String regex_1 = "^[0-9]{1,3}:~[0-9]{1,3}:$";
-        Pattern pattern_1 = Pattern.compile(regex_1);
-        // 2) '장:~장:절'
-        String regex_2 = "^[0-9]{1,3}:~[0-9]{1,3}:[0-9]{1,3}$";
-        Pattern pattern_2 = Pattern.compile(regex_2);
-        // 3) '장:절~장:'
-        String regex_3 = "^[0-9]{1,3}:[0-9]{1,3}~[0-9]{1,3}:$";
-        Pattern pattern_3 = Pattern.compile(regex_3);
-        // 4) '장:절~장:절'
-        String regex_4 = "^[0-9]{1,3}:[0-9]{1,3}~[0-9]{1,3}:[0-9]{1,3}$";
-        Pattern pattern_4 = Pattern.compile(regex_4);
-        // 5) '절~장:절'
-        String regex_5 = "^[0-9]{1,3}~[0-9]{1,3}:[0-9]{1,3}$";
-        Pattern pattern_5 = Pattern.compile(regex_5);
-        // 6) '장:(절,)절~절(,절)' // 단수장(본장)
-        String regex_6 = "^([0-9]+):([0-9]+[,])*([0-9])+(~[0-9]+)*([,][0-9]+)*(~[0-9]+)*$";
-        Pattern pattern_6 = Pattern.compile(regex_6);
-        // 7) '장:'
-        String regex_7 = "^[0-9]{1,3}:$";
-        Pattern pattern_7 = Pattern.compile(regex_7);
-        // 8) '(절,)절(,절)' // 단수장(본장)
-        String regex_8 = "^([0-9]+[,]*[~]*)+([0-9][,]*)*$";
-        Pattern pattern_8 = Pattern.compile(regex_8);
+//========
+// :: (2개)
+//========
+// :: (2개) // ':'로 끝남
+        // 정규식 1) ^[0-9]+:~[0-9]+:$
+        // 형태 '장:~장:'
+        String regex_01 = "^[0-9]+:~[0-9]+:$";
+        Pattern pattern_01 = Pattern.compile(regex_01);
+// :: (2개) // '절'로 끝남
+        // 정규식 2) ^[0-9]+:[0-9]+~[0-9]+:[0-9]+$
+        // 형태 '장:절~장:절'
+        String regex_02 = "^[0-9]+:[0-9]+~[0-9]+:[0-9]+$";
+        Pattern pattern_02 = Pattern.compile(regex_02);
+//========
+// : (1개)
+//========
+// : (1개) // ~~ (2개)
+        // 정규식 3) ^[0-9]+:[0-9]+~[0-9]+(,[0-9]+)*~[0-9]+$
+        // 형태 '장:절~절(,절),절~절'
+        String regex_03 = "^[0-9]+:[0-9]+~[0-9]+(,[0-9]+)*~[0-9]+$";
+        Pattern pattern_03 = Pattern.compile(regex_03);
+// : (1개) // ~ (1개) // '장'으로 시작
+        // 정규식 4) ^[0-9]+:[0-9]+(,[0-9]+)*~([0-9]+,)*[0-9]+$
+        // 형태 '장:절(,절)~(절,)절'
+        String regex_04 = "^[0-9]+:[0-9]+(,[0-9]+)*~([0-9]+,)*[0-9]+$";
+        Pattern pattern_04 = Pattern.compile(regex_04);
+// : (1개) // ~ (1개) // '절'로 시작
+        // 정규식 5) ^([0-9]+)~[0-9]+:[0-9]+$
+        // 형태 '절~장:절'
+        String regex_05 = "^([0-9]+)~[0-9]+:[0-9]+$";
+        Pattern pattern_05 = Pattern.compile(regex_05);
+// : (1개) // '~' 없음(0개) // ':'로 끝남
+        // 정규식 6) ^[0-9]+:$
+        // 형태 '장:'
+        String regex_06 = "^[0-9]+:$";
+        Pattern pattern_06 = Pattern.compile(regex_06);
+// : (1개) // '~' 없음(0개) // '절'로 끝남
+        // 정규식 7) ^[0-9]+:[0-9]+(,[0-9]+)*$
+        // 형태 '장:절(,절)'
+        String regex_07 = "^[0-9]+:[0-9]+(,[0-9]+)*$";
+        Pattern pattern_07 = Pattern.compile(regex_07);
+//========
+// ':' 없음(0개)
+//========
+// ':' 없음(0개) // ~~ (2개)
+        // 정규식 8) ^[0-9]+~.+~[0-9]+$
+        // 형태 '절~절(,절),절~절'
+        String regex_08 = "^[0-9]+~.+~[0-9]+$";
+        Pattern pattern_08 = Pattern.compile(regex_08);
+// ':' 없음(0개) // ~ (1개)
+        // 정규식 9) ^[0-9]+(,[0-9]+)*~([0-9]+,)*[0-9]+$
+        // 형태 '절(,절)~(절,)절'
+        String regex_09 = "^[0-9]+(,[0-9]+)*~([0-9]+,)*[0-9]+$";
+        Pattern pattern_09 = Pattern.compile(regex_09);
+// ':' 없음(0개) // '~' 없음(0개)
+        // 정규식 10) ^[0-9]+(,[0-9]+)*$
+        // 형태 '절(,절)'
+        String regex_10 = "^[0-9]+(,[0-9]+)*$";
+        Pattern pattern_10 = Pattern.compile(regex_10);
 
         Matcher matcher;
         // 시간 스탬프
         long time = System.currentTimeMillis();
         for (String item:gwanjuAll) {
-            matcher = pattern_1.matcher(item); if (matcher.find()) { type_1++; }
-            else { matcher = pattern_2.matcher(item); if (matcher.find()) { type_2++; }
-            else { matcher = pattern_3.matcher(item); if (matcher.find()) { type_3++; }
-            else { matcher = pattern_4.matcher(item); if (matcher.find()) { type_4++; }
-            else { matcher = pattern_5.matcher(item); if (matcher.find()) { type_5++; }
-            else { matcher = pattern_6.matcher(item); if (matcher.find()) { type_6++; }
-            else { matcher = pattern_7.matcher(item); if (matcher.find()) { type_7++; }
-            else { matcher = pattern_8.matcher(item); if (matcher.find()) { type_8++; }
+            matcher = pattern_01.matcher(item); if (matcher.find()) { type_01++; }
+            else { matcher = pattern_02.matcher(item); if (matcher.find()) { type_02++; }
+            else { matcher = pattern_03.matcher(item); if (matcher.find()) { type_03++; }
+            else { matcher = pattern_04.matcher(item); if (matcher.find()) { type_04++; }
+            else { matcher = pattern_05.matcher(item); if (matcher.find()) { type_05++; }
+            else { matcher = pattern_06.matcher(item); if (matcher.find()) { type_06++; }
+            else { matcher = pattern_07.matcher(item); if (matcher.find()) { type_07++; }
+            else { matcher = pattern_08.matcher(item); if (matcher.find()) { type_08++; }
+            else { matcher = pattern_09.matcher(item); if (matcher.find()) { type_09++; }
+            else { matcher = pattern_10.matcher(item); if (matcher.find()) { type_10++; }
             else { type_out++; outsider += "\n" + item; // type 미상 자료 수집
-            }}}}}}}}
+            }}}}}}}}}}
             if ((System.currentTimeMillis() - time) > 1000) {
                 Toast.makeText(this, "작업 중...", Toast.LENGTH_SHORT).show();
                 time = System.currentTimeMillis();
@@ -106,15 +144,17 @@ public class MainActivity extends AppCompatActivity {
         String outsiderFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "outsider.txt";
         // 5) 총수 = (분류 + 미분류) 여부 확인
         String rpt = "관주 장절표시 총수(unique) : " + TotalCount + " 개\n";
-        rpt += ((type_1+type_2+type_3+type_4+type_5+type_6+type_7+type_8+type_out)==TotalCount) ? "<관주 숫자 이상무>" : "<관주 숫자 틀림>";
-        rpt += "\n" + regex_1 + " = " + type_1;
-        rpt += "\n" + regex_2 + " = " + type_2;
-        rpt += "\n" + regex_3 + " = " + type_3;
-        rpt += "\n" + regex_4 + " = " + type_4;
-        rpt += "\n" + regex_5 + " = " + type_5;
-        rpt += "\n" + regex_6 + " = " + type_6;
-        rpt += "\n" + regex_7 + " = " + type_7;
-        rpt += "\n" + regex_8 + " = " + type_8;
+        rpt += ((type_01+type_02+type_03+type_04+type_05+type_06+type_07+type_08+type_09+type_10+type_out)==TotalCount) ? "<관주 숫자 이상무>" : "<관주 숫자 틀림>";
+        rpt += "\n정규식 01) " + regex_01 + " = " + type_01;
+        rpt += "\n정규식 02) " + regex_02 + " = " + type_02;
+        rpt += "\n정규식 03) " + regex_03 + " = " + type_03;
+        rpt += "\n정규식 04) " + regex_04 + " = " + type_04;
+        rpt += "\n정규식 05) " + regex_05 + " = " + type_05;
+        rpt += "\n정규식 06) " + regex_06 + " = " + type_06;
+        rpt += "\n정규식 07) " + regex_07 + " = " + type_07;
+        rpt += "\n정규식 08) " + regex_08 + " = " + type_08;
+        rpt += "\n정규식 09) " + regex_09 + " = " + type_09;
+        rpt += "\n정규식 10) " + regex_10 + " = " + type_10;
         rpt += "\n" + "type_out = " + type_out;
         // 6) 보고서 출력
         writeFile(rpt+outsider, outsiderFile);
